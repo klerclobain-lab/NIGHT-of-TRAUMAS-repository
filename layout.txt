@@ -1,0 +1,68 @@
+import type React from "react"
+import type { Metadata, Viewport } from "next"
+import { Pirata_One, Chakra_Petch, Space_Mono } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
+import "./globals.css"
+
+const gothic = Pirata_One({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-gothic",
+  display: "swap",
+})
+
+const display = Chakra_Petch({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+})
+
+const mono = Space_Mono({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+})
+
+export const metadata: Metadata = {
+  title: "NIGHT of TRAUMAS 3.0 — Industrial / Hard Techno / Experimental",
+  description:
+    "NIGHT of TRAUMAS 3.0 — underground industrial & hard techno rave. 31.10.2026 · 23:00–06:00 · Secret Location. Prevendite tramite PR autorizzati. STATUS: PRE-SALE OPEN.",
+  keywords: [
+    "techno",
+    "hard techno",
+    "melodic techno",
+    "rave",
+    "underground",
+    "Night of Traumas",
+    "prevendite",
+  ],
+  openGraph: {
+    title: "NIGHT of TRAUMAS 3.0",
+    description: "Industrial / Hard Techno / Experimental — 31.10.2026 · Location segreta.",
+    type: "website",
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: "#050505",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="it" className="dark">
+      <body className={`${gothic.variable} ${display.variable} ${mono.variable} font-display antialiased`}>
+        {children}
+        <Analytics />
+      </body>
+    </html>
+  )
+}

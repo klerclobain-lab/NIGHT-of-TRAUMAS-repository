@@ -1,0 +1,51 @@
+import { MessageCircle } from "lucide-react"
+
+const WA_LINK =
+  "https://wa.me/393486448578?text=Ciao!%20Vorrei%20acquistare%20la%20prevendita%20per%20Night%20of%20Traumas%203.0"
+
+export function SiteFooter() {
+  return (
+    <footer className="relative border-t border-[#2a1215] px-4 pb-32 pt-16">
+      <div className="mx-auto max-w-3xl text-center">
+        <p className="font-gothic text-3xl text-neon text-glow-soft">
+          NIGHT of TRAUMAS 3.0
+        </p>
+        <p className="mt-2 font-mono text-[10px] tracking-[0.4em] text-muted-foreground">
+          INDUSTRIAL / HARD TECHNO / EXPERIMENTAL
+        </p>
+
+        <div className="mt-7 flex items-center justify-center gap-3">
+          <Social href={WA_LINK} label="WhatsApp">
+            <MessageCircle className="h-5 w-5" />
+          </Social>
+        </div>
+
+        <p className="mt-10 font-mono text-[9px] tracking-[0.3em] text-muted-foreground">
+          © 2026 NIGHT of TRAUMAS — ALL RIGHTS RESERVED. RESPECT THE RAVE.
+        </p>
+      </div>
+    </footer>
+  )
+}
+
+function Social({
+  href,
+  label,
+  children,
+}: {
+  href: string
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="flex h-11 w-11 items-center justify-center rounded-full border border-[#2a1215] text-silver transition-all hover:-translate-y-0.5 hover:border-neon hover:text-neon hover:box-glow"
+    >
+      {children}
+    </a>
+  )
+}

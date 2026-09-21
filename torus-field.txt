@@ -1,0 +1,184 @@
+"use client"
+
+import { useEffect, useRef } from "react"
+
+type P = { x: number; y: number; z: number }
+
+/**
+ * Interactive wireframe torus + drifting particle field rendered on a raw
+ * 2D canvas via manual 3D projection. Reacts to cursor and scroll.
+ */
+export function TorusField() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const pointer = useRef({ x: 0, y: 0, tx: 0, ty: 0 })
+  const scroll = useRef(0)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    let width = 0
+    let height = 0
+    let dpr = Math.min(window.devicePixelRatio || 1, 2)
+
+    const resize = () => {
+      dpr = Math.min(window.devicePixelRatio || 1, 2)
+      width = canvas.clientWidth
+      height = canvas.clientHeight
+      canvas.width = Math.floor(width * dpr)
+      canvas.height = Math.floor(height * dpr)
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    }
+    resize()
+    window.addEventListener("resize", resize)
+
+    // ---- Build torus vertex grid ----
+    const R = 1.9 // main radius
+    const r = 0.72 // tube radius
+    const uSteps = 44
+    const vSteps = 18
+    const verts: P[] = []
+    for (let i = 0; i < uSteps; i++) {
+      const u = (i / uSteps) * Math.PI * 2
+      for (let j = 0; j < vSteps; j++) {
+        const v = (j / vSteps) * Math.PI * 2
+        verts.push({
+          x: (R + r * Math.cos(v)) * Math.cos(u),
+          y: (R + r * Math.cos(v)) * Math.sin(u),
+          z: r * Math.sin(v),
+        })
+      }
+    }
+    const idx = (i: number, j: number) => (i % uSteps) * vSteps + (j % vSteps)
+
+    // ---- Particle field ----
+    const particles: P[] = Array.from({ length: 90 }, () => ({
+      x: (Math.random() - 0.5) * 9,
+      y: (Math.random() - 0.5) * 9,
+      z: (Math.random() - 0.5) * 6,
+    }))
+
+    const rot = (p: P, ax: number, ay: number): P => {
+      // rotate around Y
+      let x = p.x * Math.cos(ay) - p.z * Math.sin(ay)
+      let z = p.x * Math.sin(ay) + p.z * Math.cos(ay)
+      let y = p.y
+      // rotate around X
+      const y2 = y * Math.cos(ax) - z * Math.sin(ax)
+      const z2 = y * Math.sin(ax) + z * Math.cos(ax)
+      return { x, y: y2, z: z2 }
+    }
+
+    const project = (p: P) => {
+      const fov = 4.2
+      const dist = 6
+      const s = fov / (dist + p.z)
+      return {
+        x: width / 2 + p.x * s * Math.min(width, height) * 0.42,
+        y: height / 2 + p.y * s * Math.min(width, height) * 0.42,
+        s,
+      }
+    }
+
+    let raf = 0
+    let t = 0
+    let mounted = true
+
+    const render = () => {
+      if (!mounted) return
+      t += 0.0045
+
+      pointer.current.x += (pointer.current.tx - pointer.current.x) * 0.05
+      pointer.current.y += (pointer.current.ty - pointer.current.y) * 0.05
+
+      const ax = t * 0.6 + pointer.current.y * 0.5 + scroll.current * 1.2
+      const ay = t + pointer.current.x * 0.6
+
+      ctx.clearRect(0, 0, width, height)
+
+      // ---- particles ----
+      for (const p of particles) {
+        p.z += 0.004
+        if (p.z > 3) p.z -= 6
+        const rp = rot(p, ax * 0.4, ay * 0.4)
+        const pr = project(rp)
+        const depth = Math.max(0, Math.min(1, (rp.z + 3) / 6))
+        const size = (1 - depth) * 2.4 + 0.3
+        ctx.beginPath()
+        ctx.fillStyle = `rgba(255,0,51,${0.08 + (1 - depth) * 0.35})`
+        ctx.arc(pr.x, pr.y, size, 0, Math.PI * 2)
+        ctx.fill()
+      }
+
+      // ---- torus wireframe ----
+      const projected = verts.map((v) => {
+        const rp = rot(v, ax, ay)
+        return { ...project(rp), z: rp.z }
+      })
+
+      ctx.lineWidth = 1
+      for (let i = 0; i < uSteps; i++) {
+        for (let j = 0; j < vSteps; j++) {
+          const a = projected[idx(i, j)]
+          const b = projected[idx(i + 1, j)]
+          const c = projected[idx(i, j + 1)]
+          const depth = (a.z + 3) / 6
+          const alpha = 0.12 + Math.max(0, 1 - depth) * 0.55
+          // red-to-crimson gradient by depth
+          const glow = depth < 1.1
+          ctx.strokeStyle = glow
+            ? `rgba(255,0,51,${alpha})`
+            : `rgba(139,0,0,${alpha * 0.8})`
+          ctx.beginPath()
+          ctx.moveTo(a.x, a.y)
+          ctx.lineTo(b.x, b.y)
+          ctx.moveTo(a.x, a.y)
+          ctx.lineTo(c.x, c.y)
+          ctx.stroke()
+        }
+      }
+
+      // ---- vertex nodes on front-facing side ----
+      for (const p of projected) {
+        if (p.z < -0.6) {
+          ctx.beginPath()
+          ctx.fillStyle = "rgba(255,0,51,0.9)"
+          ctx.arc(p.x, p.y, 1.1, 0, Math.PI * 2)
+          ctx.fill()
+        }
+      }
+
+      raf = requestAnimationFrame(render)
+    }
+    render()
+
+    const onPointer = (e: PointerEvent) => {
+      pointer.current.tx = (e.clientX / window.innerWidth - 0.5) * 2
+      pointer.current.ty = (e.clientY / window.innerHeight - 0.5) * 2
+    }
+    const onScroll = () => {
+      const max = document.body.scrollHeight - window.innerHeight
+      scroll.current = max > 0 ? window.scrollY / max : 0
+    }
+    window.addEventListener("pointermove", onPointer)
+    window.addEventListener("scroll", onScroll, { passive: true })
+
+    return () => {
+      mounted = false
+      cancelAnimationFrame(raf)
+      window.removeEventListener("resize", resize)
+      window.removeEventListener("pointermove", onPointer)
+      window.removeEventListener("scroll", onScroll)
+    }
+  }, [])
+
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      className="pointer-events-none h-full w-full"
+    />
+  )
+}

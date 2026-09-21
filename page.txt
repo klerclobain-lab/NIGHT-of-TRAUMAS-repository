@@ -1,0 +1,28 @@
+import { SiteHeader } from "@/components/site-header"
+import { Hero } from "@/components/hero"
+import { Manifesto } from "@/components/manifesto"
+import { Lineup } from "@/components/lineup"
+import { Ticketing } from "@/components/ticketing"
+import { StickyCta } from "@/components/sticky-cta"
+import { SiteFooter } from "@/components/site-footer"
+
+export default function Page() {
+  return (
+    <>
+      {/* CRT / grain overlays */}
+      <div className="noise-overlay" aria-hidden="true" />
+      <div className="scanlines" aria-hidden="true" />
+      <div className="vignette" aria-hidden="true" />
+
+      <SiteHeader />
+      <main className="relative">
+        <Hero />
+        <Manifesto />
+        <Lineup />
+        <Ticketing />
+        <SiteFooter />
+      </main>
+      <StickyCta />
+    </>
+  )
+}

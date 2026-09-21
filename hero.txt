@@ -1,0 +1,137 @@
+"use client"
+
+import { motion } from "motion/react"
+import { CalendarDays, Clock, MapPin } from "lucide-react"
+import { TorusField } from "./torus-field"
+import { Countdown } from "./countdown"
+
+const WA_LINK =
+  "https://wa.me/393486448578?text=Ciao!%20Vorrei%20acquistare%20la%20prevendita%20per%20Night%20of%20Traumas%203.0"
+
+export function Hero() {
+  return (
+    <section
+      id="top"
+      className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-4 pt-24 pb-16"
+    >
+      {/* 3D interactive background */}
+      <div className="absolute inset-0 -z-10">
+        <TorusField />
+        <div className="absolute inset-0 bg-gradient-to-b from-void/20 via-transparent to-void" />
+      </div>
+
+      <div className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
+        <motion.p
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="mb-4 font-mono text-[11px] tracking-[0.5em] text-silver/80"
+        >
+          31.10.2026 — PRIVATE RAVE - OPEN BAR
+        </motion.p>
+
+        <motion.h1
+          initial={{ opacity: 0, scale: 0.94 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.15 }}
+          className="w-full"
+        >
+          <span className="sr-only">NIGHT of TRAUMAS 3.0</span>
+          <img
+            src="/logo.png"
+            alt="NIGHT of TRAUMAS 3.0"
+            className="logo-flicker mx-auto w-full max-w-md drop-shadow-[0_0_45px_rgba(255,0,51,0.35)] sm:max-w-lg md:max-w-xl"
+          />
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.35 }}
+          className="mt-5 font-mono text-xs tracking-[0.35em] text-silver sm:text-sm"
+        >
+          INDUSTRIAL / HARD TECHNO / EXPERIMENTAL
+        </motion.p>
+
+        {/* key details bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.5 }}
+          className="mt-8 flex w-full flex-col items-stretch gap-2 sm:flex-row sm:justify-center"
+        >
+          <Detail icon={<CalendarDays className="h-4 w-4" />} text="31.10.2026" />
+          <Detail icon={<Clock className="h-4 w-4" />} text="23:00 — 06:00" />
+          <Detail
+            icon={<MapPin className="h-4 w-4" />}
+            text="SECRET LOCATION"
+            sub="Inviata 4 giorni prima agli accreditati"
+          />
+        </motion.div>
+
+        {/* countdown */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.65 }}
+          className="mt-8 w-full max-w-md"
+        >
+          <p className="mb-3 font-mono text-[10px] tracking-[0.4em] text-muted-foreground">
+            INIZIO EVENTO TRA
+          </p>
+          <Countdown />
+        </motion.div>
+
+        <motion.a
+          href={WA_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.8 }}
+          className="mt-9 inline-flex items-center gap-2 rounded-md border border-neon bg-neon/10 px-6 py-3 font-mono text-xs font-bold tracking-[0.25em] text-neon transition-all hover:bg-neon hover:text-void box-glow"
+        >
+          CONTATTA I PR
+        </motion.a>
+      </div>
+
+      {/* scroll cue */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+        className="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2"
+      >
+        <span className="font-mono text-[9px] tracking-[0.4em] text-muted-foreground">
+        </span>
+        <span className="h-8 w-px animate-pulse bg-gradient-to-b from-neon to-transparent" />
+      </motion.div>
+    </section>
+  )
+}
+
+function Detail({
+  icon,
+  text,
+  sub,
+}: {
+  icon: React.ReactNode
+  text: string
+  sub?: string
+}) {
+  return (
+    <div className="flex items-center justify-center gap-2 rounded-md border border-[#2a1215] bg-void/50 px-4 py-2.5 backdrop-blur-sm">
+      <span className="text-neon">{icon}</span>
+      <div className="text-left">
+        <span className="block font-mono text-[11px] font-bold tracking-widest text-foreground">
+          {text}
+        </span>
+        {sub ? (
+          <span className="block font-mono text-[8px] tracking-wider text-muted-foreground">
+            {sub}
+          </span>
+        ) : null}
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,96 @@
+"use client"
+
+import { motion } from "motion/react"
+import { CameraOff, Zap } from "lucide-react"
+
+export function Manifesto() {
+  return (
+    <section id="concept" className="relative px-4 py-20 sm:py-28">
+      <div className="mx-auto max-w-3xl">
+        <SectionLabel index="01" title="CONCEPT / MANIFESTO" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7 }}
+          className="relative overflow-hidden rounded-lg border border-neon/30 bg-void/60 p-6 backdrop-blur-sm box-glow sm:p-9"
+        >
+          {/* corner wire accents */}
+          <span className="pointer-events-none absolute left-0 top-0 h-6 w-6 border-l-2 border-t-2 border-neon" />
+          <span className="pointer-events-none absolute right-0 top-0 h-6 w-6 border-r-2 border-t-2 border-neon" />
+          <span className="pointer-events-none absolute bottom-0 left-0 h-6 w-6 border-b-2 border-l-2 border-neon" />
+          <span className="pointer-events-none absolute bottom-0 right-0 h-6 w-6 border-b-2 border-r-2 border-neon" />
+
+          <p className="font-gothic text-2xl leading-tight text-foreground sm:text-3xl">
+            Il rituale techno nel <span className="text-neon text-glow-soft">rosso assoluto</span>.
+          </p>
+
+          <p className="mt-5 font-mono text-sm leading-relaxed text-silver/90">
+            NIGHT of TRAUMAS 3.0 non è una classica festa, è un&apos;esperienza
+            fuori dal normale a cui non vorrai mancare. Vibez horror, texture
+            industriali e frequenze che ti attraversano il corpo. Luci
+            stroboscopiche, nebbia densa e un impianto costruito per spingere il
+            suono oltre il limite. Nessuno schermo tra te e la musica — solo la
+            traccia, la folla e il caos.
+          </p>
+
+          <div className="mt-7 grid gap-4 sm:grid-cols-2">
+            <Feature
+              icon={<Zap className="h-5 w-5" />}
+              title="DRESS-CODE HALLOWEEN VIBEZ"
+              text="Potrai accedere solo se sarai ritenuto idoneo dalla security all'ingresso."
+            />
+            <Feature
+              icon={<CameraOff className="h-5 w-5" />}
+              title="UV ZONE NO-PHOTO POLICY"
+              text="Una zona Relax con raggi e stendardi UV, dove potrai chillare senza preoccuparti di occhi indiscreti."
+            />
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+function Feature({
+  icon,
+  title,
+  text,
+}: {
+  icon: React.ReactNode
+  title: string
+  text: string
+}) {
+  return (
+    <div className="rounded-md border border-[#2a1215] bg-black/40 p-4 transition-colors hover:border-neon/50">
+      <div className="flex items-center gap-2 text-neon">
+        {icon}
+        <span className="font-mono text-[11px] font-bold tracking-[0.2em]">{title}</span>
+      </div>
+      <p className="mt-2 font-mono text-xs leading-relaxed text-muted-foreground">
+        {text}
+      </p>
+    </div>
+  )
+}
+
+export function SectionLabel({ index, title }: { index: string; title: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+      className="mb-8 flex items-center gap-3"
+    >
+      <span className="font-mono text-xs font-bold text-neon text-glow-soft">
+        [{index}]
+      </span>
+      <h2 className="font-mono text-xs font-bold tracking-[0.4em] text-silver sm:text-sm">
+        {title}
+      </h2>
+      <span className="h-px flex-1 bg-gradient-to-r from-neon/60 to-transparent" />
+    </motion.div>
+  )
+}

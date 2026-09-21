@@ -1,0 +1,87 @@
+"use client"
+
+import { motion } from "motion/react"
+import { Music } from "lucide-react"
+import { SectionLabel } from "./manifesto"
+
+type Artist = {
+  name: string
+  genre: string
+  soundcloud: string
+}
+
+const ARTISTS: Artist[] = [
+  { name: "NACHO BRAVO", genre: "MELODIC TECHNO", soundcloud: "https://on.soundcloud.com/DaVhvRFYZSa0RP9lpI" },
+  { name: "IMPULSIVE", genre: "DRIVING TECHNO", soundcloud: "https://on.soundcloud.com/URI5rDGwa0Mr0corL4" },
+  { name: "AMELIE LENS", genre: "ACID", soundcloud: "https://on.soundcloud.com/ns45OKlOq7qvxNkVSI" },
+  { name: "CHARLOTTE DE WITTE", genre: "ACID", soundcloud: "https://on.soundcloud.com/s2RcwvPi97XnIuVvcN" },
+  { name: "JXSH", genre: "ACID / EXPERIMENTAL", soundcloud: "https://on.soundcloud.com/0G2U21kYzvGcUXkVM5" },
+  { name: "THNDERZ", genre: "ACID", soundcloud: "https://on.soundcloud.com/a83p2bH8lqMS7y8E2S" },
+]
+
+export function Lineup() {
+  return (
+    <section id="djset" className="relative px-4 py-20 sm:py-28">
+      <div className="mx-auto max-w-5xl">
+        <SectionLabel index="02" title="DJ SET" />
+
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {ARTISTS.map((a, i) => (
+            <motion.article
+              key={a.name}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: (i % 3) * 0.08 }}
+              className="group relative overflow-hidden rounded-lg border border-[#2a1215] bg-void/60 p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-neon hover:box-glow"
+            >
+              {/* hover glow wash */}
+              <span className="pointer-events-none absolute inset-0 bg-gradient-to-br from-neon/0 via-neon/0 to-blood/0 opacity-0 transition-opacity duration-300 group-hover:to-blood/15 group-hover:opacity-100" />
+
+              <div className="relative flex items-start justify-between">
+                <span className="font-mono text-[10px] tracking-widest text-muted-foreground">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              </div>
+
+              <h3 className="relative mt-4 font-gothic text-3xl text-foreground transition-colors duration-300 group-hover:text-neon group-hover:text-glow">
+                {a.name}
+              </h3>
+              <p className="relative mt-1 font-mono text-[10px] tracking-[0.3em] text-silver/70">
+                {a.genre}
+              </p>
+
+              <div className="relative mt-5 flex items-center gap-3">
+                <IconLink href={a.soundcloud} label={`${a.name} su Soundcloud`}>
+                  <Music className="h-4 w-4" />
+                </IconLink>
+              </div>
+            </motion.article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function IconLink({
+  href,
+  label,
+  children,
+}: {
+  href: string
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="flex h-9 w-9 items-center justify-center rounded-full border border-[#2a1215] text-silver transition-colors hover:border-neon hover:text-neon hover:text-glow"
+    >
+      {children}
+    </a>
+  )
+}

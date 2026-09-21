@@ -1,0 +1,84 @@
+"use client"
+
+import { motion } from "motion/react"
+import { Lock, Banknote, QrCode, Link2 } from "lucide-react"
+import { SectionLabel } from "./manifesto"
+
+const STEPS = [
+  {
+    icon: <Banknote className="h-4 w-4" />,
+    text: "Acquisto prevendite esclusivamente in CONTANTI tramite PR autorizzati.",
+  },
+  {
+    icon: <Link2 className="h-4 w-4" />,
+    text: "Dopo il pagamento ricevi il link riservato per la registrazione.",
+  },
+  {
+    icon: <QrCode className="h-4 w-4" />,
+    text: "Ottieni il tuo PASS QR unico — obbligatorio per l'ingresso.",
+  },
+]
+
+export function Ticketing() {
+  return (
+    <section id="access" className="relative px-4 py-20 sm:py-28">
+      <div className="mx-auto max-w-3xl">
+        <SectionLabel index="03" title="MODALITÀ DI PARTECIPAZIONE" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7 }}
+          className="relative overflow-hidden rounded-lg border-2 border-neon/50 bg-gradient-to-b from-blood/15 to-void/70 p-6 backdrop-blur-sm box-glow sm:p-9"
+        >
+          {/* warning stripe */}
+          <div className="mb-6 flex items-center gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-neon bg-neon/10 text-neon box-glow">
+              <Lock className="h-5 w-5" />
+            </span>
+            <div>
+              <p className="font-mono text-[10px] tracking-[0.3em] text-neon">
+                ACCESSO RISERVATO
+              </p>
+              <p className="font-gothic text-2xl leading-none text-foreground text-glow-soft">
+                Prevendite Controllate
+              </p>
+            </div>
+          </div>
+
+          <p className="font-mono text-sm leading-relaxed text-silver/90">
+            L&apos;evento è a numero chiuso. Non esistono biglietti online: ogni
+            accredito passa da un PR autorizzato. Segui i passaggi in ordine.
+          </p>
+
+          <ol className="mt-6 space-y-3">
+            {STEPS.map((s, i) => (
+              <li
+                key={i}
+                className="flex items-start gap-3 rounded-md border border-[#2a1215] bg-black/40 p-3.5"
+              >
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-neon/40 text-neon">
+                  {s.icon}
+                </span>
+                <div>
+                  <span className="font-mono text-[9px] tracking-[0.3em] text-muted-foreground">
+                    STEP 0{i + 1}
+                  </span>
+                  <p className="font-mono text-xs leading-relaxed text-foreground">
+                    {s.text}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <p className="mt-6 border-t border-[#2a1215] pt-4 font-mono text-[10px] leading-relaxed tracking-wider text-muted-foreground">
+            ⚠ DIFFIDA DA CANALI NON UFFICIALI. Il QR è nominale e monouso: qualsiasi
+            duplicato viene invalidato all&apos;ingresso.
+          </p>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
